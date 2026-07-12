@@ -14,16 +14,16 @@ def main():
     print("Bag of Words - Programmatic Evaluation")
     print("=" * 50)
 
-    # User's question
+    
     prompt = "What is the average movie rating?"
 
-    # Simulated Bag of Words response
+    
     actual_rating = 8.74
 
-    # Correct answer
+    
     expected_rating = 8.74
 
-    # Run the evaluation
+
     result = numeric_eval(expected_rating, actual_rating)
 
     print(f"Prompt: {prompt}")
