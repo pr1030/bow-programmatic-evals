@@ -1,0 +1,20 @@
+[
+    {
+        "name": "Average Rating - Correct",
+        "prompt": "What is the average movie rating?",
+        "expected": 8.74,
+        "response": "The average movie rating is 8.74."
+    },
+    {
+        "name": "Average Rating - Incorrect",
+        "prompt": "What is the average movie rating?",
+        "expected": 8.74,
+        "response": "The average movie rating is 8.65."
+    },
+    {
+        "name": "No Numeric Value",
+        "prompt": "What is the average movie rating?",
+        "expected": 8.74,
+        "response": "I don't know."
+    }
+]
