@@ -7,20 +7,23 @@ class PostgresClient:
         self.connection = None
 
     def connect(self):
+        print("Connecting with:")
+        print(DB_CONFIG)
+
         self.connection = psycopg2.connect(
-            host=DB_CONFIG["host"],
-            port=DB_CONFIG["port"],
-            database=DB_CONFIG["database"],
+            dbname=DB_CONFIG["database"],
             user=DB_CONFIG["user"],
             password=DB_CONFIG["password"],
+            host=DB_CONFIG["host"],
+            port=DB_CONFIG["port"],
         )
 
     def execute_query(self, query):
         cursor = self.connection.cursor()
         cursor.execute(query)
-        results = cursor.fetchall()
+        rows = cursor.fetchall()
         cursor.close()
-        return results
+        return rows
 
     def close(self):
         if self.connection:
