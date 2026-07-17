@@ -1,5 +1,6 @@
 import json
-from evaluator import numeric_eval
+
+from database.postgres_client import PostgresClient
 
 
 def load_test_cases(file_path):
@@ -8,40 +9,29 @@ def load_test_cases(file_path):
 
 
 def main():
-
-    print("=" * 60)
+    print("=" * 50)
     print("Bag of Words - Programmatic Evaluation Framework")
-    print("=" * 60)
+    print("=" * 50)
 
     test_cases = load_test_cases("test_cases/movie_eval_cases.json")
 
-    passed = 0
-    failed = 0
+    client = PostgresClient()
+    client.connect()
 
-    for index, case in enumerate(test_cases, start=1):
+    for test_case in test_cases:
+        print("\n" + "=" * 50)
+        print(f"Test: {test_case['name']}")
 
-        print("\n----------------------------------------")
-        print(f"Test Case {index}: {case['name']}")
-        print("----------------------------------------")
+        result = client.execute_query(
+            test_case["ground_truth_sql"]
+        )
 
-        result = numeric_eval(case["expected"], case["response"])
+        expected_value = result[0][0]
 
-        print(f"Prompt   : {case['prompt']}")
-        print(f"Response : {case['response']}")
+        print(f"Prompt: {test_case['prompt']}")
+        print(f"Ground Truth: {expected_value}")
 
-        if result:
-            print("Result   : PASS")
-            passed += 1
-        else:
-            print("Result   : FAIL")
-            failed += 1
-
-    print("\n" + "=" * 60)
-    print("Evaluation Summary")
-    print("=" * 60)
-    print(f"Total Tests : {len(test_cases)}")
-    print(f"Passed      : {passed}")
-    print(f"Failed      : {failed}")
+    client.close()
 
 
 if __name__ == "__main__":
