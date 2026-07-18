@@ -1,12 +1,132 @@
 [
     {
+        "id": 1,
         "name": "Average Rating",
+        "category": "aggregation",
         "prompt": "What is the average movie rating?",
-        "ground_truth_sql": "SELECT ROUND(AVG(rating), 2) FROM evalmovies;"
+        "ground_truth_sql": "SELECT ROUND(AVG(\"Rating\"),2) FROM evalmovies;",
+        "expected_type": "number",
+        "tolerance": 0.01
     },
     {
+        "id": 2,
+        "name": "Highest Rating",
+        "category": "aggregation",
+        "prompt": "What is the highest movie rating?",
+        "ground_truth_sql": "SELECT MAX(\"Rating\") FROM evalmovies;",
+        "expected_type": "number",
+        "tolerance": 0
+    },
+    {
+        "id": 3,
+        "name": "Lowest Rating",
+        "category": "aggregation",
+        "prompt": "What is the lowest movie rating?",
+        "ground_truth_sql": "SELECT MIN(\"Rating\") FROM evalmovies;",
+        "expected_type": "number",
+        "tolerance": 0
+    },
+    {
+        "id": 4,
         "name": "Movie Count",
+        "category": "aggregation",
         "prompt": "How many movies are there?",
-        "ground_truth_sql": "SELECT COUNT(*) FROM evalmovies;"
-    } 
+        "ground_truth_sql": "SELECT COUNT(*) FROM evalmovies;",
+        "expected_type": "number",
+        "tolerance": 0
+    },
+    {
+        "id": 5,
+        "name": "Award Winners",
+        "category": "filter",
+        "prompt": "How many award winning movies are there?",
+        "ground_truth_sql": "SELECT COUNT(*) FROM evalmovies WHERE is_award_winner = true;",
+        "expected_type": "number",
+        "tolerance": 0
+    },
+    {
+        "id": 6,
+        "name": "Average Actor Age",
+        "category": "aggregation",
+        "prompt": "What is the average actor age?",
+        "ground_truth_sql": "SELECT ROUND(AVG(\"Actor Age\"),2) FROM evalmovies;",
+        "expected_type": "number",
+        "tolerance": 0.01
+    },
+    {
+        "id": 7,
+        "name": "Average License Cost",
+        "category": "aggregation",
+        "prompt": "What is the average license cost?",
+        "ground_truth_sql": "SELECT ROUND(AVG(license_cost_usd),2) FROM evalmovies;",
+        "expected_type": "number",
+        "tolerance": 0.01
+    },
+    {
+        "id": 8,
+        "name": "Total Views",
+        "category": "aggregation",
+        "prompt": "How many total views were recorded in the last 30 days?",
+        "ground_truth_sql": "SELECT SUM(views_last_30d) FROM evalmovies;",
+        "expected_type": "number",
+        "tolerance": 0
+    },
+    {
+        "id": 9,
+        "name": "Movies After 2015",
+        "category": "filter",
+        "prompt": "How many movies were released after 2015?",
+        "ground_truth_sql": "SELECT COUNT(*) FROM evalmovies WHERE \"Released Date\" >= '2016-01-01';",
+        "expected_type": "number",
+        "tolerance": 0
+    },
+    {
+        "id": 10,
+        "name": "Netflix Movies",
+        "category": "filter",
+        "prompt": "How many movies are available on Netflix?",
+        "ground_truth_sql": "SELECT COUNT(*) FROM evalmovies WHERE streaming_platform='Netflix';",
+        "expected_type": "number",
+        "tolerance": 0
+    },
+    {
+        "id": 11,
+        "name": "Movies By Genre",
+        "category": "groupby",
+        "prompt": "Count the number of movies in each genre.",
+        "ground_truth_sql": "SELECT \"Genre\", COUNT(*) FROM evalmovies GROUP BY \"Genre\" ORDER BY COUNT(*) DESC;",
+        "expected_type": "table"
+    },
+    {
+        "id": 12,
+        "name": "Average Rating By Genre",
+        "category": "groupby",
+        "prompt": "What is the average rating for each genre?",
+        "ground_truth_sql": "SELECT \"Genre\", ROUND(AVG(\"Rating\"),2) FROM evalmovies GROUP BY \"Genre\" ORDER BY 2 DESC;",
+        "expected_type": "table"
+    },
+    {
+        "id": 13,
+        "name": "Movies Per Platform",
+        "category": "groupby",
+        "prompt": "Count movies by streaming platform.",
+        "ground_truth_sql": "SELECT streaming_platform, COUNT(*) FROM evalmovies GROUP BY streaming_platform ORDER BY COUNT(*) DESC;",
+        "expected_type": "table"
+    },
+    {
+        "id": 14,
+        "name": "Top Rated Movies",
+        "category": "sorting",
+        "prompt": "Show the top five highest rated movies.",
+        "ground_truth_sql": "SELECT \"Movie Title\", \"Rating\" FROM evalmovies ORDER BY \"Rating\" DESC LIMIT 5;",
+        "expected_type": "table"
+    },
+    {
+        "id": 15,
+        "name": "Most Viewed Movies",
+        "category": "sorting",
+        "prompt": "Show the five most viewed movies.",
+        "ground_truth_sql": "SELECT \"Movie Title\", views_last_30d FROM evalmovies ORDER BY views_last_30d DESC LIMIT 5;",
+        "expected_type": "table"
+    }
 ]
