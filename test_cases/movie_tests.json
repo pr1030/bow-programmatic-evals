@@ -1,0 +1,10 @@
+[
+    {
+        "prompt": "How many movies are there in the evalmovies table?",
+        "expected": 200
+    },
+    {
+        "prompt": "How many award winning movies are there?",
+        "expected": 84
+    }
+]
