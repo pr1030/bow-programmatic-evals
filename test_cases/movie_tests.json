@@ -6,5 +6,9 @@
     {
         "prompt": "How many award winning movies are there?",
         "expected": 84
+    },
+    {
+        "prompt": "How many movies have an actor age between 0 and 30?",
+        "expected": 41
     }
 ]
