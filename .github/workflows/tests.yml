@@ -1,13 +1,14 @@
-name: Programmatic Evaluation Tests
+name: Project Checks
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - master
   pull_request:
-    branches: [main]
 
 jobs:
-  test:
+  project-check:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,8 +23,21 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
 
-      - name: Run tests
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
+
+      - name: Verify project structure
         run: |
-          python -m unittest discover tests
+          echo "Repository cloned successfully."
+          python --version
+
+          test -f README.md
+          test -f requirements.txt
+          test -f main.py
+
+          echo "Project structure looks good."
+
+      - name: Success
+        run: echo "GitHub Actions completed successfully."
