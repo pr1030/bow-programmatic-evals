@@ -162,3 +162,14 @@ This workflow helps reduce schema hallucinations by discovering tables and colum
 ## License
 
 This project is licensed under the MIT License.
+
+## Features
+
+- Connects to Bag of Words MCP server
+- Authenticates using an API key
+- Creates evaluation reports automatically
+- Retrieves database context
+- Executes prompts using the `create_data` MCP tool
+- Extracts structured responses
+- Compares actual results with expected values
+- Produces PASS/FAIL evaluation summaries

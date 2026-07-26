@@ -8,7 +8,43 @@
         "expected": 84
     },
     {
-        "prompt": "How many movies have an actor age between 0 and 30?",
+        "prompt": "How many movies have an Actor Age between 0 and 30?",
         "expected": 41
+    },
+    {
+        "prompt": "How many movies have an Actor Age greater than 50?",
+        "expected": 53      
+    },
+    {
+        "prompt": "What is the maximum movie rating?",
+        "expected": 9.3
+    },
+    {
+        "prompt": "What is the minimum movie rating?",
+        "expected":8.0
+    },
+    {
+        "prompt": "What is the average Actor Age?",
+        "expected": 41.37
+    },
+    {
+        "prompt": "How many movies are available on Netflix?",
+        "expected": 43
+    },
+    {
+        "prompt": "How many Action movies are there?",
+        "expected": 0
+    },
+    {
+        "prompt": "How many movies belong to the India region?",
+        "expected": 0
+    },
+    {
+        "prompt": "How many movies have a Rating greater than 8?",
+        "expected": 191
+    },
+    {
+        "prompt": "Which movie has the highest Revenue?",
+        "expected": "Goodfellas"
     }
 ]
