@@ -38,7 +38,6 @@ async def main():
                 tools = await session.list_tools()
 
                 for tool in tools.tools:
-
                     if tool.name == "create_data":
                         print(tool)
 
@@ -51,7 +50,6 @@ async def main():
                     }
                 )
 
-                # Convert the returned JSON string into a Python dictionary
                 response = json.loads(result.content[0].text)
 
                 print("\nParsed Response:\n")
@@ -59,7 +57,6 @@ async def main():
 
                 report_id = response["report_id"]
 
-                # Load all evaluation test cases
                 test_file = Path("test_cases/movie_tests.json")
 
                 with open(test_file, "r") as f:
@@ -89,7 +86,9 @@ async def main():
 
                 print("\n========== Running Evaluation ==========\n")
 
+                total_tests = len(test_cases)
                 passed_tests = 0
+                failed_tests = []
 
                 for index, test in enumerate(test_cases, start=1):
 
@@ -108,19 +107,66 @@ async def main():
 
                     data_response = json.loads(data_result.content[0].text)
 
-                    first_row = data_response["data_preview"]["rows"][0]
+                    rows = data_response.get("data_preview", {}).get("rows", [])
 
-                    actual = list(first_row.values())[0]
-
-                    passed = numeric_eval(expected, str(actual))
+                    if len(rows) == 0:
+                        actual = "NO DATA RETURNED"
+                        passed = False
+                    else:
+                        first_row = rows[0]
+                        actual = list(first_row.values())[0]
+                        passed = numeric_eval(expected, str(actual))
 
                     print("Prompt   :", prompt)
                     print("Expected :", expected)
                     print("Actual   :", actual)
                     print("Result   :", "PASS ✅" if passed else "FAIL ❌")
 
-    if passed:
-        passed_tests += 1
+                    if passed:
+                        passed_tests += 1
+                    else:
+                        failed_tests.append(
+                            {                                    
+                                "test": index,
+                                "expected": expected,
+                                "actual": actual,
+                            }
+                        )
+
+                    if passed:
+                        passed_tests += 1
+                    else:
+                        failed_tests.append(
+                            {
+                                "test": index,
+                                "expected": expected,
+                                "actual": actual
+                            }
+                        )
+
+                accuracy = (passed_tests / total_tests) * 100
+
+                print("\n" + "=" * 45)
+                print("Evaluation Summary")
+                print("=" * 45)
+
+                print(f"Total Tests : {total_tests}")
+                print(f"Passed      : {passed_tests}")
+                print(f"Failed      : {total_tests - passed_tests}")
+                print(f"Accuracy    : {accuracy:.2f}%")
+
+                if failed_tests:
+
+                    print("\nFailed Tests:")
+
+                    for failure in failed_tests:
+                        print(
+                            f" - Test {failure['test']} "
+                            f"(Expected {failure['expected']}, Got {failure['actual']})"
+                        )
+
+                else:
+                    print("\n🎉 All tests passed!")
 
 
 if __name__ == "__main__":
