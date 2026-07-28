@@ -1,5 +1,6 @@
 import asyncio
 import json
+import time
 import httpx
 
 from pathlib import Path
@@ -7,10 +8,7 @@ from evaluator import numeric_eval
 from mcp.client.streamable_http import streamable_http_client
 from mcp.client.session import ClientSession
 
-# Replace with your API key
 API_KEY = "bow_lTHUcS9mtBZ4S0Uzvfsix5HxxShPo5uyP-dDuzlMyrY"
-
-# MCP endpoint
 MCP_URL = "http://localhost:3000/api/mcp"
 
 
@@ -29,19 +27,11 @@ async def main():
 
             async with ClientSession(read_stream, write_stream) as session:
 
-                print("Initializing...")
                 await session.initialize()
-                print("Connected!")
 
-                print("\nAvailable tools:\n")
-
-                tools = await session.list_tools()
-
-                for tool in tools.tools:
-                    if tool.name == "create_data":
-                        print(tool)
-
-                print("\nCreating report...\n")
+                # -----------------------------
+                # Create report
+                # -----------------------------
 
                 result = await session.call_tool(
                     "create_report",
@@ -51,48 +41,31 @@ async def main():
                 )
 
                 response = json.loads(result.content[0].text)
-
-                print("\nParsed Response:\n")
-                print(response)
-
                 report_id = response["report_id"]
 
-                test_file = Path("test_cases/movie_tests.json")
+                # -----------------------------
+                # Load test cases
+                # -----------------------------
 
-                with open(test_file, "r") as f:
+                with open(Path("test_cases/movie_tests.json"), "r") as f:
                     test_cases = json.load(f)
 
-                print("\nReport ID:")
-                print(report_id)
-
-                print("\nGetting context...\n")
-
-                context_result = await session.call_tool(
-                    "get_context",
-                    {
-                        "report_id": report_id
-                    }
-                )
-
-                context = json.loads(context_result.content[0].text)
-
-                print("\nAvailable Data Sources:\n")
-
-                for ds in context["data_sources"]:
-                    print(f"Data Source: {ds['name']} ({ds['type']})")
-
-                    for table in ds["tables"]:
-                        print(f"   Table: {table['name']}")
-
-                print("\n========== Running Evaluation ==========\n")
+                print("\n" + "=" * 60)
+                print("              MCP Evaluation Framework")
+                print("=" * 60)
+                print(f"\nRunning {len(test_cases)} evaluation tests...\n")
 
                 total_tests = len(test_cases)
                 passed_tests = 0
                 failed_tests = []
 
-                for index, test in enumerate(test_cases, start=1):
+                start_time = time.perf_counter()
 
-                    print(f"\nTest {index}")
+                # =====================================================
+                # Run Tests
+                # =====================================================
+
+                for index, test in enumerate(test_cases, start=1):
 
                     prompt = test["prompt"]
                     expected = test["expected"]
@@ -106,67 +79,90 @@ async def main():
                     )
 
                     data_response = json.loads(data_result.content[0].text)
+                    
 
                     rows = data_response.get("data_preview", {}).get("rows", [])
 
-                    if len(rows) == 0:
+                    if not rows:
+
                         actual = "NO DATA RETURNED"
                         passed = False
-                    else:
-                        first_row = rows[0]
-                        actual = list(first_row.values())[0]
-                        passed = numeric_eval(expected, str(actual))
 
-                    print("Prompt   :", prompt)
-                    print("Expected :", expected)
-                    print("Actual   :", actual)
-                    print("Result   :", "PASS ✅" if passed else "FAIL ❌")
+                    else:
+
+                        row = rows[0]
+
+                        # Count query
+                        if isinstance(expected, (int, float)):
+
+                            value = None
+
+                            for v in row.values():
+                                if isinstance(v, (int, float)):
+                                    value = v
+                                    break
+
+                            if value is None:
+                                value = list(row.values())[0]
+
+                            actual = value
+                            passed = numeric_eval(expected, str(actual))
+
+                        # String query
+                        else:
+
+                            actual = list(row.values())[0]
+                            passed = str(actual).strip().lower() == str(expected).strip().lower()
+
+                    status = "PASS ✅" if passed else "FAIL ❌"
+
+                    print(f"{status}  Test {index:2}  {prompt}")
 
                     if passed:
                         passed_tests += 1
                     else:
-                        failed_tests.append(
-                            {                                    
-                                "test": index,
-                                "expected": expected,
-                                "actual": actual,
-                            }
-                        )
+                        failed_tests.append({
+                            "test": index,
+                            "prompt": prompt,
+                            "expected": expected,
+                            "actual": actual
+                        })
 
-                    if passed:
-                        passed_tests += 1
-                    else:
-                        failed_tests.append(
-                            {
-                                "test": index,
-                                "expected": expected,
-                                "actual": actual
-                            }
-                        )
+                end_time = time.perf_counter()
 
                 accuracy = (passed_tests / total_tests) * 100
 
-                print("\n" + "=" * 45)
-                print("Evaluation Summary")
-                print("=" * 45)
+                # =====================================================
+                # Summary
+                # =====================================================
 
-                print(f"Total Tests : {total_tests}")
-                print(f"Passed      : {passed_tests}")
-                print(f"Failed      : {total_tests - passed_tests}")
-                print(f"Accuracy    : {accuracy:.2f}%")
+                print("\n")
+                print("=" * 60)
+                print("Evaluation Summary")
+                print("=" * 60)
+
+                print(f"Total Tests   : {total_tests}")
+                print(f"Passed        : {passed_tests}")
+                print(f"Failed        : {total_tests - passed_tests}")
+                print(f"Accuracy      : {accuracy:.2f}%")
+                print(f"Execution Time: {end_time - start_time:.2f} sec")
 
                 if failed_tests:
 
-                    print("\nFailed Tests:")
+                    print("\nFailed Tests\n")
 
                     for failure in failed_tests:
-                        print(
-                            f" - Test {failure['test']} "
-                            f"(Expected {failure['expected']}, Got {failure['actual']})"
-                        )
+
+                        print(f"Test {failure['test']}")
+                        print(f"Prompt   : {failure['prompt']}")
+                        print(f"Expected : {failure['expected']}")
+                        print(f"Actual   : {failure['actual']}")
+                        print()
 
                 else:
+
                     print("\n🎉 All tests passed!")
+
 
 
 if __name__ == "__main__":

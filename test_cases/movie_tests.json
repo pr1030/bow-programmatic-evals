@@ -1,50 +1,74 @@
 [
     {
+        "name": "Movie Count",
         "prompt": "How many movies are there in the evalmovies table?",
-        "expected": 200
+        "expected": 200,
+        "evaluator": "numeric"
     },
     {
+        "name": "Award Winning Movies",
         "prompt": "How many award winning movies are there?",
-        "expected": 84
+        "expected": 84,
+        "evaluator": "numeric"
     },
     {
+        "name": "Actor Age Between 0 and 30",
         "prompt": "How many movies have an Actor Age between 0 and 30?",
-        "expected": 41
+        "expected": 41,
+        "evaluator": "numeric"
     },
     {
+        "name": "Actor Age Greater Than 50",
         "prompt": "How many movies have an Actor Age greater than 50?",
-        "expected": 53      
+        "expected": 53,
+        "evaluator": "numeric"
     },
     {
+        "name": "Maximum Movie Rating",
         "prompt": "What is the maximum movie rating?",
-        "expected": 9.3
+        "expected": 9.3,
+        "evaluator": "numeric"
     },
     {
+        "name": "Minimum Movie Rating",
         "prompt": "What is the minimum movie rating?",
-        "expected":8.0
+        "expected": 8.0,
+        "evaluator": "numeric"
     },
     {
+        "name": "Average Actor Age",
         "prompt": "What is the average Actor Age?",
-        "expected": 41.37
+        "expected": 41.37,
+        "evaluator": "numeric"
     },
     {
+        "name": "Netflix Movies",
         "prompt": "How many movies are available on Netflix?",
-        "expected": 43
+        "expected": 43,
+        "evaluator": "numeric"
     },
     {
+        "name": "Action Movies",
         "prompt": "How many Action movies are there?",
-        "expected": 0
+        "expected": 57,
+        "evaluator": "numeric"
     },
     {
+        "name": "Movies From India",
         "prompt": "How many movies belong to the India region?",
-        "expected": 0
+        "expected": 0,
+        "evaluator": "numeric"
     },
     {
+        "name": "Movies Rated Above 8",
         "prompt": "How many movies have a Rating greater than 8?",
-        "expected": 191
+        "expected": 191,
+        "evaluator": "numeric"
     },
     {
+        "name": "Highest Revenue Movie",
         "prompt": "Which movie has the highest Revenue?",
-        "expected": "Goodfellas"
+        "expected": "Goodfellas",
+        "evaluator": "string"
     }
 ]
