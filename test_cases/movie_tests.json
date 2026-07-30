@@ -43,19 +43,19 @@
     },
     {
         "name": "Netflix Movies",
-        "prompt": "How many movies are available on Netflix?",
+        "prompt": "Count the number of movies where streaming_platform is Netflix.",
         "expected": 43,
         "evaluator": "numeric"
     },
     {
         "name": "Action Movies",
-        "prompt": "How many Action movies are there?",
+        "prompt": "Count the number of movies where Genre is Action.",
         "expected": 57,
         "evaluator": "numeric"
     },
     {
         "name": "Movies From India",
-        "prompt": "How many movies belong to the India region?",
+        "prompt": "Count the number of movies where region is India.",
         "expected": 0,
         "evaluator": "numeric"
     },
@@ -67,7 +67,7 @@
     },
     {
         "name": "Highest Revenue Movie",
-        "prompt": "Which movie has the highest Revenue?",
+        "prompt": "Return the Movie Title of the movie with the highest Revenue.",
         "expected": "Goodfellas",
         "evaluator": "string"
     }
