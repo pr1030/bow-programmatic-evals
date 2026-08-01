@@ -1,7 +1,7 @@
 import json
 
-from evaluators.numeric import numeric_eval
-from evaluators.string import string_eval
+from evaluators import get_evaluator
+from extractors import get_extractor
 
 
 async def run_tests(session, report_id, test_cases):
@@ -12,6 +12,7 @@ async def run_tests(session, report_id, test_cases):
 
         prompt = test["prompt"]
         expected = test["expected"]
+        evaluator_name = test["evaluator"]
 
         data_result = await session.call_tool(
             "create_data",
@@ -32,12 +33,16 @@ async def run_tests(session, report_id, test_cases):
 
         else:
 
-            actual = list(rows[0].values())[0]
+            # Get the correct extractor
+            extractor = get_extractor(evaluator_name)
 
-            from evaluators import get_evaluator
+            # Extract the answer
+            actual = extractor(rows)
 
-            evaluator = get_evaluator(test["evaluator"])
+            # Get the correct evaluator
+            evaluator = get_evaluator(evaluator_name)
 
+            # Compare expected vs actual
             passed = evaluator(expected, actual)
 
         results.append(
